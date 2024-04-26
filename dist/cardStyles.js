@@ -48,24 +48,15 @@ export const cardStyles = css`
   .pool-monitor-container-marker .marker {
     text-align: center;
     justify-self: center;
-    width: 40px;
+    width: 60px;
     height:20px;
     padding-top:5px;
     border-radius: 5px;
     position: absolute;
     z-index: 1;
+    transform: translateX(-10%);
   }
   
-  .pool-monitor-container-marker .marker-state {
-    border-radius: 5px;
-    width: 90px;
-    text-align: right;
-    justify-self: right;
-
-    position: absolute;
-    z-index: 1;
-  }
-
   .pool-monitor-container-marker .triangle {
     width: 0;
     height: 0;

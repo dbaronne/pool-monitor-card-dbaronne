@@ -1,4 +1,4 @@
-# Pool Monitor Card
+# Pool Monitor Card (dbaronne)
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
@@ -7,7 +7,7 @@
 
 ## ReadMe multilingue
 
-Clique sur les boutons suivants pour choisir la langue de ton ReadMe : [![fr](https://img.shields.io/badge/lang-fr-green.svg)](https://github.com/wilsto/pool-monitor-card/blob/master/README-fr.md) [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/wilsto/pool-monitor-card/blob/master/README.md)
+Clique sur les boutons suivants pour choisir la langue de ton ReadMe : [![fr](https://img.shields.io/badge/lang-fr-green.svg)](https://github.com/dbaronne/pool-monitor-card-dbaronne/blob/master/README-fr.md) [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/dbaronne/pool-monitor-card-dbaronne/blob/master/README.md)
 
 ## Table des matières <!-- omit in toc -->
 
@@ -65,20 +65,20 @@ Avec la "Pool Monitor Card", vous pouvez facilement contrôler ces aspects impor
 
 Hey mec ! Aide-moi pour quelques :beers: ou un :coffee:!
 
-[![coffee](https://www.buymeacoffee.com/assets/img/custom_images/black_img.png)](https://bmc.link/wilsto)
+[![coffee](https://www.buymeacoffee.com/assets/img/custom_images/black_img.png)](https://bmc.link/dbaronne)
 
 ## Installation
 
 ### via HACS
 
 En attendant que la carte "Pool Monitor Card" soit disponible par défaut dans le répertoire HACS.  cliquez sur :
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=wilsto&repository=pool-monitor-card&category=plugin)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=dbaronne&repository=pool-monitor-card-dbaronne&category=plugin)
 
 ### Manuellement
 
-1. Téléchargez le fichier `pool_monitor_card.js` depuis la [dernière version disponible](https://github.com/wilsto/pool-monitor-card/releases) et sauvegardez-le dans votre dossier `configuration/www`.
+1. Téléchargez le fichier `pool_monitor_card.js` depuis la [dernière version disponible](https://github.com/dbaronne/pool-monitor-card-dbaronne/releases) et sauvegardez-le dans votre dossier `configuration/www`.
 1. Allez dans `Configuration > Lovelace dashboard > Resources` dans Home Assistant et cliquez sur `Add resource`.
-    1. Ajoutez `/local/community/pool-monitor-card/pool_monitor_card.js` à l'URL.
+    1. Ajoutez `/local/community/pool-monitor-card-dbaronne/pool_monitor_card.js` à l'URL.
     1. Choisissez `Javascript Module` comme Resource type.
 
 ## Mise en place sous Lovelace
@@ -89,12 +89,12 @@ Pas encore possible.
 
 ### Utilisation de YAML
 
-1. Vous avez juste besoin d'ajouter une nouvelle carte avec `type : 'custom:pool-monitor-card'` à votre liste de cartes et n'importe quelle configuration que vous trouverez ci-dessous si vous voulez personnaliser davantage votre carte.
+1. Vous avez juste besoin d'ajouter une nouvelle carte avec `type : 'custom:pool-monitor-card-dbaronne'` à votre liste de cartes et n'importe quelle configuration que vous trouverez ci-dessous si vous voulez personnaliser davantage votre carte.
 
 #### Exemple de code
 
 ```yaml
-type: 'custom:pool-monitor-card'
+type: 'custom:pool-monitor-card-dbaronne'
 temperature: sensor.your_temperature_sensor
 ph: sensor.your_ph_sensor
 ```
@@ -107,7 +107,7 @@ ph: sensor.your_ph_sensor
 
 | Nom | Type | Exigence | Description | Valeur par défaut |
 | -------------- | ----------- | ------------ | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type` | texte | **Obligatoire** | `custom:pool-monitor-card` ||
+| `type` | texte | **Obligatoire** | `custom:pool-monitor-card-dbaronne` ||
 | `temperature` | texte | **Option*** | Entité Temperature  |`aucune`|
 | `ph` | texte | **Option*** | Entité pH  |`aucune`|
 | `orp` | texte | **Option*** | Entité ORP  |`aucune`|

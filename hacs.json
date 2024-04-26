@@ -1,6 +1,6 @@
 {
-"name": "Pool Monitor Card",
+"name": "Pool Monitor Card (dbaronne)",
 "content_in_root": true,
-"filename": "pool_monitor_card.js",
+"filename": "pool_monitor_card_dbaronne.js",
 "render_readme" : true
 }

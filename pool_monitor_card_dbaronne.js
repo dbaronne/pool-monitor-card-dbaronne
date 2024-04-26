@@ -109,8 +109,8 @@ const translations = {
 }
 
 class PoolMonitorCard extends LitElement {
-  static cardType = 'pool-monitor-card'
-  static cardName = 'Pool Monitor Card'
+  static cardType = 'pool-monitor-card-dbaronne'
+  static cardName = 'Pool Monitor Card (dbaronne)'
   static cardDescription = 'The "Pool Monitor Card" is a home assistant plugin that provides information about the temperature, pH, and ORP levels of your swimming pool'
 
   static get properties() {
@@ -122,22 +122,8 @@ class PoolMonitorCard extends LitElement {
 
   static styles = [
     css`
-  :host {
-    background: var(--ha-card-background, var(--card-background-color, white));
-    border-radius: var(--ha-card-border-radius, 12px);
-    border-width: var(--ha-card-border-width,4px);
-    box-shadow: var(
-      --ha-card-box-shadow
-    );
-    color: var(--primary-text-color);
-    display: block;
-    transition: all 0.3s ease-out 0s;
-    position: relative;
-    padding-top: 25px;
-  }
-
   .section{
-    padding-bottom:10px;
+    padding:15px;
   }
 
   .pool-monitor-title{
@@ -155,20 +141,18 @@ class PoolMonitorCard extends LitElement {
   }
   .pool-monitor-container {
     display: grid;
-    grid-template-columns: 10% repeat(6, 1fr) 5%;
-    padding: 5px;
+    height:14px;
   }
 
   .pool-monitor-container-values {
     display: grid;
-    grid-template-columns:12% repeat(6, 1fr) 2% ;
-    padding: 5px;
+    grid-template-columns: 1fr repeat(5, 2fr) 1fr;
+    padding-top: 10px;
   }
 
   .pool-monitor-container-marker {
     display: grid;
-    grid-template-columns: 10% repeat(6, 1fr) 5%;
-    padding: 10px;
+    padding: 9px;
     grid-template-rows:15px;
     line-height: 15px;
     position: relative;
@@ -177,18 +161,13 @@ class PoolMonitorCard extends LitElement {
   .pool-monitor-container-marker .marker {
     text-align: center;
     justify-self: center;
-    width: 40px;
+    width: 60px;
     height:20px;
     padding-top:5px;
     border-radius: 5px;
     position: absolute;
     z-index: 1;
-  }
-  
-  .pool-monitor-container-marker .marker-state {
-    width: 60px;
-    position: absolute;
-    z-index: 1;
+    transform: translateX(-10%);
   }
 
   .pool-monitor-container-marker .triangle {
@@ -240,8 +219,65 @@ class PoolMonitorCard extends LitElement {
     position: absolute;
     z-index: 1;
   }
+
+  .progress {
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right, #e17055 5%, #fdcb6e 30%, #00b894, #00b894, #fdcb6e 70%, #e17055 95%);
+  }
+  .progress-temp {
+    /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right, #69AEFF 15%,#ffdb3a 30%, #ffdb3a 60%, #e5405e 95%);
+  }
+
+  .progress-bar-child {
+    width: 100%;
+    height: 100%;
+    border-radius: 7px;
+  }
   
+  .header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding-bottom:15px;
+  }
+
+  .header-hidden {
+    display: none;
+  }
+
+  .name, .subname {
+    align-items: center;
+    min-width: 0px;
+    letter-spacing: var(--mcg-title-letter-spacing, normal);
+  }
+  .name > span {
+    font-size: 1.2em;
+    font-weight: var(--mcg-title-font-weight, 500);
+    max-height: 1.4em;
+    min-height: 1.4em;
+    opacity: 0.65;
+  }
+  .subname > span {
+    font-size: 1.0em;
+    font-weight: var(--mcg-title-font-weight, 300);
+    max-height: 1.4em;
+    min-height: 1.4em;
+    opacity: 0.55;
+  }
+
+  .ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .icon {
+    color: var(--paper-item-icon-color, #44739e);
+    display: inline-block;
+    flex: 0 0 1.7em;
+    text-align: center;
+  }
 `
+
   ];
 
   constructor() {
@@ -250,53 +286,36 @@ class PoolMonitorCard extends LitElement {
   render() {
     const config = this.getConfig()
     const data = this.processData()
-    if (config.compact) {
-      return html`
-      <div id="pool-monitor-card">
+    return html`
+    <div id="pool-monitor-card-dbaronne" class="card">
+      <ha-card>
         ${cardContent.generateTitle(config)}
-        ${data.temperature !== undefined ? cardContent.generateCompactBody(data.temperature): ''}
-        ${data.temperature_2 !== undefined ? cardContent.generateCompactBody(data.temperature_2): ''}
-        ${data.ph !== undefined ? cardContent.generateCompactBody(data.ph): ''}
-        ${data.orp !== undefined ? cardContent.generateCompactBody(data.orp): ''}
-        ${data.tds !== undefined ? cardContent.generateCompactBody(data.tds): ''}      
-        ${data.salinity !== undefined ? cardContent.generateCompactBody(data.salinity): ''}      
-        ${data.cya !== undefined ? cardContent.generateCompactBody(data.cya): ''}      
-        ${data.calcium !== undefined ? cardContent.generateCompactBody(data.calcium): ''}      
-        ${data.phosphate !== undefined ? cardContent.generateCompactBody(data.phosphate): ''}      
-        ${data.alkalinity !== undefined ? cardContent.generateCompactBody(data.alkalinity): ''}      
-        ${data.free_chlorine !== undefined ? cardContent.generateCompactBody(data.free_chlorine): ''}      
-        ${data.total_chlorine !== undefined ? cardContent.generateCompactBody(data.total_chlorine): ''}      
-        ${data.pressure !== undefined ? cardContent.generateCompactBody(data.pressure): ''}      
-      </div>`;
-    } else {
-      return html`
-      <div id="pool-monitor-card">
-        ${cardContent.generateTitle(config)}
-        ${data.temperature !== undefined ? cardContent.generateBody(data.temperature): ''}
-        ${data.temperature_2 !== undefined ? cardContent.generateBody(data.temperature_2): ''}
-        ${data.ph !== undefined ? cardContent.generateBody(data.ph): ''}
-        ${data.orp !== undefined ? cardContent.generateBody(data.orp): ''}
-        ${data.tds !== undefined ? cardContent.generateBody(data.tds): ''}      
-        ${data.salinity !== undefined ? cardContent.generateBody(data.salinity): ''}      
-        ${data.cya !== undefined ? cardContent.generateBody(data.cya): ''}      
-        ${data.calcium !== undefined ? cardContent.generateBody(data.calcium): ''}      
-        ${data.phosphate !== undefined ? cardContent.generateBody(data.phosphate): ''}      
-        ${data.alkalinity !== undefined ? cardContent.generateBody(data.alkalinity): ''}      
-        ${data.free_chlorine !== undefined ? cardContent.generateBody(data.free_chlorine): ''}      
-        ${data.total_chlorine !== undefined ? cardContent.generateBody(data.total_chlorine): ''}      
-        ${data.pressure !== undefined ? cardContent.generateBody(data.pressure): ''}      
-      </div>`;
-    }
-
+        ${data.temperature !== undefined ? cardContent.generateBody(config, data.temperature): ''}
+        ${data.temperature_2 !== undefined ? cardContent.generateBody(config, data.temperature_2): ''}
+        ${data.ph !== undefined ? cardContent.generateBody(config, data.ph): ''}
+        ${data.orp !== undefined ? cardContent.generateBody(config, data.orp): ''}
+        ${data.tds !== undefined ? cardContent.generateBody(config, data.tds): ''}      
+        ${data.salinity !== undefined ? cardContent.generateBody(config, data.salinity): ''}      
+        ${data.cya !== undefined ? cardContent.generateBody(config, data.cya): ''}      
+        ${data.calcium !== undefined ? cardContent.generateBody(config, data.calcium): ''}      
+        ${data.phosphate !== undefined ? cardContent.generateBody(config, data.phosphate): ''}      
+        ${data.alkalinity !== undefined ? cardContent.generateBody(config, data.alkalinity): ''}      
+        ${data.free_chlorine !== undefined ? cardContent.generateBody(config, data.free_chlorine): ''}      
+        ${data.total_chlorine !== undefined ? cardContent.generateBody(config, data.total_chlorine): ''}      
+        ${data.pressure !== undefined ? cardContent.generateBody(config, data.pressure): ''}      
+      </ha-card>
+    </div>`;
   }
 
   getConfig () {
     const config = {};
 
     config.title = this.config.title ;
-    config.compact = this.config.compact ?? false;
+    config.show_header = this.config.show_header ?? true;
     config.show_names = this.config.show_names ?? true;
     config.show_labels = this.config.show_labels ?? true;
+    config.show_unit = this.config.show_unit ?? true;
+    config.show_legend_unit = this.config.show_legend_unit ?? true;
     config.language = this.config.language ?? 'en';
 
     config.override = this.config.override ?? false;
@@ -305,7 +324,8 @@ class PoolMonitorCard extends LitElement {
     config.temperature_name = this.config.temperature_name ?? translations[config.language]["sensor"]["temperature"];
     config.temperature_unit = this.config.temperature_unit ?? "°C";
     config.temperature_unit = config.temperature_unit.toUpperCase()
-    config.temperature_setpoint = this.config.temperature_setpoint ?? (config.temperature_unit === "°F" ? 80 : 27) ;
+    config.temperature_setpoint = this.config.temperature_setpoint
+    config.temperature_default_setpoint = this.config.temperature_default_setpoint ?? (config.temperature_unit === "°F" ? 80 : 27) ;
     config.temperature_step = this.config.temperature_step ?? (config.temperature_unit === "°F" ? 2 : 1) ;
     config.temperature_override = config.temperature_unit === "°F" ? 79 : 26.5;
 
@@ -313,21 +333,24 @@ class PoolMonitorCard extends LitElement {
     config.temperature_2_name = this.config.temperature_2_name ?? translations[config.language]["sensor"]["temperature_2"];
     config.temperature_2_unit = this.config.temperature_2_unit ?? "°C";
     config.temperature_2_unit = config.temperature_2_unit.toUpperCase()
-    config.temperature_2_setpoint = this.config.temperature_2_setpoint ?? (config.temperature_2_unit === "°F" ? 80 : 27) ;
+    config.temperature_2_setpoint = this.config.temperature_2_setpoint;
+    config.temperature_2_default_setpoint = (config.temperature_2_unit === "°F" ? 80 : 27) ;
     config.temperature_2_step = this.config.temperature_2_step ?? (config.temperature_2_unit === "°F" ? 2 : 1) ;
     config.temperature_2_override = config.temperature_2_unit === "°F" ? 92 : 28.5;
 
     config.ph = this.config.ph;
     config.ph_name = this.config.ph_name ?? translations[config.language]["sensor"]["ph"];
-    config.ph_unit = this.config.ph_unit ?? "pH";
-    config.ph_setpoint = this.config.ph_setpoint ?? 7.2;
+    config.ph_unit = this.config.ph_unit ?? "";
+    config.ph_setpoint = this.config.ph_setpoint;
+    config.ph_default_setpoint = 7.2;
     config.ph_step = this.config.ph_step ?? 0.2 ;
     config.ph_override = 7.5;
     
     config.orp = this.config.orp ;
     config.orp_name = this.config.orp_name ?? translations[config.language]["sensor"]["orp"];
     config.orp_unit = this.config.orp_unit ?? "mV";
-    config.orp_setpoint = this.config.orp_setpoint ?? 700;
+    config.orp_setpoint = this.config.orp_setpoint;
+    config.orp_default_setpoint = 700;
     config.orp_step = this.config.orp_step ?? 50 ;
     config.orp_override = 551;
 
@@ -335,63 +358,72 @@ class PoolMonitorCard extends LitElement {
     config.tds_name = this.config.tds_name ?? translations[config.language]["sensor"]["tds"];
     config.tds_unit = this.config.tds_unit ?? "g/L";
     config.tds_unit = config.tds_unit.toLowerCase()
-    config.tds_setpoint = this.config.tds_setpoint ?? (config.tds_unit === "ppm" ? 4000 : 4) ;
+    config.tds_setpoint = this.config.tds_setpoint;
+    config.tds_default_setpoint = (config.tds_unit === "ppm" ? 4000 : 4) ;
     config.tds_step = this.config.tds_step ?? (config.tds_unit === "ppm" ? 1000 : 1) ;
     config.tds_override = config.tds_unit === "ppm" ? 7000 : 7;
 
     config.salinity = this.config.salinity ;
     config.salinity_name = this.config.salinity_name ?? translations[config.language]["sensor"]["salinity"];
     config.salinity_unit = this.config.salinity_unit ?? "ppm";
-    config.salinity_setpoint = this.config.salinity_setpoint ?? (config.salinity_unit === "ppm" ? 3000 : 4.5) ;
+    config.salinity_setpoint = this.config.salinity_setpoint ;
+    config.salinity_default_setpoint = (config.salinity_unit === "ppm" ? 3000 : 4.5) ;
     config.salinity_step = this.config.salinity_step ?? (config.salinity_unit === "ppm" ? 500 : 0.5)  ;
     config.salinity_override = config.salinity_unit === "ppm" ? 2750 : 4;
 
     config.cya = this.config.cya ;
     config.cya_name = this.config.cya_name ?? translations[config.language]["sensor"]["cya"];
     config.cya_unit = this.config.cya_unit ?? "ppm";
-    config.cya_setpoint = this.config.cya_setpoint ?? 40;
+    config.cya_setpoint = this.config.cya_setpoint;
+    config.cya_default_setpoint = 40;
     config.cya_step = this.config.cya_step ?? 10 ;
     config.cya_override = 27;
 
     config.calcium = this.config.calcium ;
     config.calcium_name = this.config.calcium_name ?? translations[config.language]["sensor"]["calcium"];
     config.calcium_unit = this.config.calcium_unit ?? "ppm";
-    config.calcium_setpoint = this.config.calcium_setpoint ?? 300;
+    config.calcium_setpoint = this.config.calcium_setpoint;
+    config.calcium_default_setpoint = 300;
     config.calcium_step = this.config.calcium_step ?? 100 ;
     config.calcium_override = 425;
 
     config.phosphate = this.config.phosphate ;
     config.phosphate_name = this.config.phosphate_name ?? translations[config.language]["sensor"]["phosphate"];
     config.phosphate_unit = this.config.phosphate_unit ?? "ppb";
-    config.phosphate_setpoint = this.config.phosphate_setpoint ?? 100;
+    config.phosphate_setpoint = this.config.phosphate_setpoint;
+    config.phosphate_default_setpoint = 100;
     config.phosphate_step = this.config.phosphate_step ?? 100 ;
     config.phosphate_override = 30;
 
     config.alkalinity = this.config.alkalinity ;
     config.alkalinity_name = this.config.alkalinity_name ?? translations[config.language]["sensor"]["alkalinity"];
     config.alkalinity_unit = this.config.alkalinity_unit ?? "ppm";
-    config.alkalinity_setpoint = this.config.alkalinity_setpoint ?? 100;
+    config.alkalinity_setpoint = this.config.alkalinity_setpoint;
+    config.alkalinity_default_setpoint = 100;
     config.alkalinity_step = this.config.alkalinity_step ?? 20 ;
     config.alkalinity_override = 50;
 
     config.free_chlorine = this.config.free_chlorine ;
     config.free_chlorine_name = this.config.free_chlorine_name ?? translations[config.language]["sensor"]["free_chlorine"];
     config.free_chlorine_unit = this.config.free_chlorine_unit ?? "ppm";
-    config.free_chlorine_setpoint = this.config.free_chlorine_setpoint ?? 2;
+    config.free_chlorine_setpoint = this.config.free_chlorine_setpoint;
+    config.free_chlorine_default_setpoint = 2;
     config.free_chlorine_step = this.config.free_chlorine_step ?? 1 ;
     config.free_chlorine_override = 1.5;
 
     config.total_chlorine = this.config.total_chlorine ;
     config.total_chlorine_name = this.config.total_chlorine_name ?? translations[config.language]["sensor"]["total_chlorine"];
     config.total_chlorine_unit = this.config.total_chlorine_unit ?? "ppm";
-    config.total_chlorine_setpoint = this.config.total_chlorine_setpoint ?? 3;
+    config.total_chlorine_setpoint = this.config.total_chlorine_setpoint;
+    config.total_chlorine_default_setpoint = 3;
     config.total_chlorine_step = this.config.total_chlorine_step ?? 1 ;
     config.total_chlorine_override = 5.5;
 
     config.pressure = this.config.pressure ;
     config.pressure_name = this.config.pressure_name ?? translations[config.language]["sensor"]["pressure"];
     config.pressure_unit = this.config.pressure_unit ?? "psi";
-    config.pressure_setpoint = this.config.pressure_setpoint ?? (config.pressure_unit === "bar" ? 1.5 : 23);
+    config.pressure_setpoint = this.config.pressure_setpoint;
+    config.pressure_default_setpoint = (config.pressure_unit === "bar" ? 1.5 : 23);
     config.pressure_step = this.config.pressure_step ?? (config.pressure_unit === "bar" ? 0.5 : 7);
     config.pressure_override = 32  ;
 
@@ -404,101 +436,111 @@ class PoolMonitorCard extends LitElement {
     const config = this.getConfig()
 
     if (config.temperature) {
-      data.temperature = this.calculateData('temperature', config.temperature_name, config.temperature, config.temperature_setpoint, config.temperature_step,config.temperature_unit,  config.temperature_override, config.override) 
+      data.temperature = this.calculateData('temperature', config.temperature_name, config.temperature, config.temperature_setpoint, config.temperature_default_setpoint, config.temperature_step,config.temperature_unit,  config.temperature_override, config.override, true) 
     }
     if (config.temperature_2) {
-      data.temperature_2 = this.calculateData('temperature_2', config.temperature_2_name, config.temperature_2, config.temperature_2_setpoint, config.temperature_2_step,config.temperature_2_unit,  config.temperature_2_override, config.override) 
+      data.temperature_2 = this.calculateData('temperature_2', config.temperature_2_name, config.temperature_2, config.temperature_2_setpoint, config.temperature_2_default_setpoint, config.temperature_2_step,config.temperature_2_unit,  config.temperature_2_override, config.override, true) 
     }
     if (config.ph) {
-      data.ph = this.calculateData('ph', config.ph_name, config.ph, config.ph_setpoint,config.ph_step,config.ph_unit,config.ph_override, config.override) 
+      data.ph = this.calculateData('ph', config.ph_name, config.ph, config.ph_setpoint, config.ph_default_setpoint,config.ph_step,config.ph_unit,config.ph_override, config.override, false) 
     }
     if (config.orp) {
-      data.orp = this.calculateData('orp', config.orp_name, config.orp, config.orp_setpoint,config.orp_step ,config.orp_unit, config.orp_override, config.override) 
+      data.orp = this.calculateData('orp', config.orp_name, config.orp, config.orp_setpoint, config.orp_default_setpoint,config.orp_step ,config.orp_unit, config.orp_override, config.override, false) 
     }
     if (config.tds) {
-      data.tds = this.calculateData('tds', config.tds_name, config.tds, config.tds_setpoint,config.tds_step, config.tds_unit, config.tds_override, config.override) 
+      data.tds = this.calculateData('tds', config.tds_name, config.tds, config.tds_setpoint, config.tds_default_setpoint,config.tds_step, config.tds_unit, config.tds_override, config.override, false) 
     }
     if (config.salinity) {
-      data.salinity = this.calculateData('salinity', config.salinity_name, config.salinity, config.salinity_setpoint,config.salinity_step, config.salinity_unit, config.salinity_override, config.override) 
+      data.salinity = this.calculateData('salinity', config.salinity_name, config.salinity, config.salinity_setpoint, config.salinity_default_setpoint,config.salinity_step, config.salinity_unit, config.salinity_override, config.override, false) 
     }
     if (config.cya) {
-      data.cya = this.calculateData('cya', config.cya_name,config.cya, config.cya_setpoint,config.cya_step, config.cya_unit, config.cya_override, config.override) 
+      data.cya = this.calculateData('cya', config.cya_name,config.cya, config.cya_setpoint, config.cya_default_setpoint,config.cya_step, config.cya_unit, config.cya_override, config.override, false) 
     }
     if (config.calcium) {
-      data.calcium = this.calculateData('calcium', config.calcium_name, config.calcium, config.calcium_setpoint,config.calcium_step, config.calcium_unit, config.calcium_override, config.override) 
+      data.calcium = this.calculateData('calcium', config.calcium_name, config.calcium, config.calcium_setpoint,config.calcium_default_setpoint,config.calcium_step, config.calcium_unit, config.calcium_override, config.override, false) 
     }
     if (config.phosphate) {
-      data.phosphate = this.calculateData('phosphate', config.phosphate_name, config.phosphate, config.phosphate_setpoint,config.phosphate_step, config.phosphate_unit, config.phosphate_override, config.override) 
+      data.phosphate = this.calculateData('phosphate', config.phosphate_name, config.phosphate, config.phosphate_setpoint, config.phosphate_default_setpoint,config.phosphate_step, config.phosphate_unit, config.phosphate_override, config.override, false) 
     }
     if (config.alkalinity) {
-      data.alkalinity = this.calculateData('alkalinity', config.alkalinity_name , config.alkalinity, config.alkalinity_setpoint,config.alkalinity_step, config.alkalinity_unit, config.alkalinity_override, config.override) 
+      data.alkalinity = this.calculateData('alkalinity', config.alkalinity_name , config.alkalinity, config.alkalinity_setpoint, config.alkalinity_default_setpoint,config.alkalinity_step, config.alkalinity_unit, config.alkalinity_override, config.overrid, falsee) 
     }    
     if (config.free_chlorine) {
-      data.free_chlorine = this.calculateData('free_chlorine', config.free_chlorine_name, config.free_chlorine, config.free_chlorine_setpoint,config.free_chlorine_step, config.free_chlorine_unit, config.free_chlorine_override, config.override) 
+      data.free_chlorine = this.calculateData('free_chlorine', config.free_chlorine_name, config.free_chlorine, config.free_chlorine_setpoint, config.free_chlorine_default_setpoint,config.free_chlorine_step, config.free_chlorine_unit, config.free_chlorine_override, config.override, false) 
     }    
     if (config.total_chlorine) {
-      data.total_chlorine = this.calculateData('total_chlorine', config.total_chlorine_name, config.total_chlorine, config.total_chlorine_setpoint,config.total_chlorine_step, config.total_chlorine_unit, config.total_chlorine_override, config.override) 
+      data.total_chlorine = this.calculateData('total_chlorine', config.total_chlorine_name, config.total_chlorine, config.total_chlorine_setpoint,config.total_chlorine_default_setpoint,config.total_chlorine_step, config.total_chlorine_unit, config.total_chlorine_override, config.override, false) 
     }    
     if (config.pressure) {
-      data.pressure = this.calculateData('pressure', config.pressure_name, config.pressure, config.pressure_setpoint,config.pressure_step, config.pressure_unit, config.pressure_override, config.override) 
+      data.pressure = this.calculateData('pressure', config.pressure_name, config.pressure, config.pressure_setpoint,config.pressure_default_setpoint,config.pressure_step, config.pressure_unit, config.pressure_override, config.override, false) 
     }    
     return data
   }
 
-  calculateData(name, title, entity, setpoint, setpoint_step, unit, override_value, override) {
+  calculateData(name, title, entity, custom_setpoint, default_setpoint, setpoint_step, unit, override_value, override, isTemp) {
     const newData = {};
     const config = this.getConfig()
 
     newData.name = name;
     newData.title = config.show_names ? title : html`&nbsp;`;
-    newData.img_src ="https://raw.githubusercontent.com/wilsto/pool-monitor-card/master/resources/"+ name +".png"
+    newData.img_src = this.hass.states[entity].attributes.icon;
     newData.value = parseFloat(this.hass.states[entity].state);
     newData.entity = entity;
     newData.last_updated = this.timeFromNow(this.hass.states[entity].last_updated, config.language);
+    newData.isTemp = isTemp;
 
-    newData.unit = unit;
+    if(custom_setpoint) {
+      newData.setpoint = parseFloat(this.hass.states[custom_setpoint].state) ?? custom_setpoint;
+    } else {
+      newData.setpoint = default_setpoint;
+    }
+
+    newData.unit = unit != "" && config.show_unit ? ` ${unit}` : ``;
+    newData.legend_unit = unit != "" && config.show_legend_unit ? ` ${unit}` : ``;
     if (override){
       newData.value = override_value;
     }
-    newData.setpoint = setpoint ;
-    const countDecimals = this.countDecimals(setpoint);
+    const countDecimals = this.countDecimals(newData.setpoint);
     if (newData.value) {
       newData.value = (newData.value < 10 ? newData.value.toFixed(2): newData.value < 100 ? newData.value.toFixed(1): newData.value.toFixed(0))
     }
     newData.setpoint_class = [
-      (setpoint - 2 *setpoint_step).toFixed(countDecimals),
-      (setpoint - setpoint_step).toFixed(countDecimals),
-      (setpoint).toFixed(countDecimals),
-      (setpoint + setpoint_step).toFixed(countDecimals),
-      (setpoint + 2 *setpoint_step).toFixed(countDecimals)
+      (newData.setpoint - 2 *setpoint_step).toFixed(countDecimals),
+      (newData.setpoint - setpoint_step).toFixed(countDecimals),
+      (newData.setpoint).toFixed(countDecimals),
+      (newData.setpoint + setpoint_step).toFixed(countDecimals),
+      (newData.setpoint + 2 *setpoint_step).toFixed(countDecimals)
     ]
 
     newData.separator = config.show_labels ? "-":"";
     newData.color = "transparent";
     if (Number(newData.value)  < Number(newData.setpoint_class[0])) {
       newData.state = config.show_labels ? translations[config.language]["state"][1]:"";
-      newData.color = "#e17055";
+      newData.color = isTemp ? "#69AEFF" : "#e17055";
     } else if (Number(newData.value)  >= Number(newData.setpoint_class[0]) && Number(newData.value)  < Number(newData.setpoint_class[1])) {
       newData.state = config.show_labels ? translations[config.language]["state"][2]:"";
-      newData.color = "#fdcb6e";
+      newData.color = isTemp ? "#ffdb3a": "#fdcb6e";
     } else if (Number(newData.value)  >= Number(newData.setpoint_class[1]) && Number(newData.value)  < Number(newData.setpoint_class[2])) {
       newData.state = config.show_labels ? translations[config.language]["state"][3]:"";
-      newData.color = "#00b894";
+      newData.color = isTemp ? "#ffdb3a": "#00b894";
     } else if (Number(newData.value)  >= Number(newData.setpoint_class[2]) && Number(newData.value)  < Number(newData.setpoint_class[3])) {
       newData.state = config.show_labels ? translations[config.language]["state"][4]:"";
-      newData.color = "#00b894";
+      newData.color = isTemp ? "#ffdb3a": "#00b894";
     } else if (Number(newData.value)  >= Number(newData.setpoint_class[3]) && Number(newData.value)  < Number(newData.setpoint_class[4])) {
       newData.state = config.show_labels ? translations[config.language]["state"][5]:"";
-      newData.color = "#fdcb6e";
+      newData.color = isTemp ? "#e5405e": "#fdcb6e";
     } else if (Number(newData.value)  >= Number(newData.setpoint_class[4])) {
       newData.state = config.show_labels ? translations[config.language]["state"][6]:"";
-      newData.color = "#e17055";
+      newData.color = isTemp ? "#e5405e": "#e17055";
     }
 
-    newData.pct = Math.max(0, Math.min(95, (Math.max(0, newData.value - (setpoint - 3 *setpoint_step)) / (6 * setpoint_step)) * 0.73 * 100 + 22)).toFixed(0);
-    newData.side_align = newData.value > setpoint ? "right" : "left" ;
-    newData.pct_cursor = newData.value > setpoint ? 100 - parseFloat(newData.pct) : parseFloat(newData.pct) -2;    
-    newData.pct_state_step = newData.value > setpoint ? 100 - parseFloat(newData.pct): parseFloat(newData.pct);
+    const min_value = newData.setpoint - 3 *setpoint_step;
+    const max_value = newData.setpoint + 3 *setpoint_step;
+    const ref_value = Math.max(min_value, Math.min(max_value, newData.value));
+    const diff_value = max_value - min_value;
+    newData.pct = Math.max(1.5, Math.min(98.5, (min_value - ref_value)*-100/diff_value)).toFixed(0);
+    newData.pct_marker = newData.value > newData.setpoint ? newData.pct - 8.5 : newData.pct - 1.5;
+    newData.side_align = newData.value > newData.setpoint ? "right" : "left" ;
     return newData
   }
 
@@ -568,71 +610,44 @@ class cardContent {
       `
     }
 
-    static generateBody (data) {
+    static generateBody (config, data) {
+      const progressClass = data.isTemp ? "progress-temp" : "progress";
+      const headerClass = config.show_header ? "header" : "header-hidden";
+
       return html`
-      <!-- ##### ${data.name} section ##### -->    
+      <!-- ##### ${data.name} section ##### -->   
       <div class="section" @click=${() => 
-          PoolMonitorCard._moreinfo(data.entity)}>   
-
+          PoolMonitorCard._moreinfo(data.entity)}>  
+        <div class="${headerClass}">
+          <div style="background-color: transparent; grid-column: 1 ;text-align:left; font-size:14px;" class="name flex">
+              <span class="ellipsis"><!---->${data.title}<!----></span>
+          </div>
+          <div style="background-color: transparent; grid-column: 2 ;text-align:center;font-size:10px;" class="subname flex">
+            <span class="ellipsis"><!---->${data.last_updated}<!----></span>
+          </div>
+          <div style="background-color: transparent; grid-column: 3 ;text-align:right;" class="icon">
+            <ha-icon .icon=${data.img_src}></ha-icon>
+          </div>
+        </div> 
         <div class="pool-monitor-container-marker" >
-          <div class="marker" style="background-color: ${data.color} ;color: black;left: ${data.pct-5}%;">${data.value}</div>
-          <div class="marker-state" style="padding-${data.side_align}:40px;text-align:${data.side_align};background-color:transparent ;${data.side_align}: ${data.pct_state_step}%;">${data.state}</div>
-          <div class="triangle" style="border-top: 10px solid ${data.color} ;left: ${data.pct-1}%;"></div>
+          <div class="marker" style="background-color: ${data.color} ;color: black;left: ${data.pct_marker}%;">${data.value}${data.unit}</div>
+          <div class="triangle" style="border-top: 10px solid ${data.color} ;left: ${data.pct}%;"></div>
         </div>
-        <div class="pool-monitor-entity-img"><img src="${data.img_src}"></div>
         <div class="pool-monitor-container">
-          <div style="background-color: transparent; grid-column: 1 ; border: 0px; box-shadow:none" class="grid-item item-row"> <div style="font-size: 0.8em;color:lightgrey;text-align:left;margin:3px 2px 0 0 ">${data.unit}</div></div>
-          <div style="background-color: #e17055; grid-column: 2 ; border-radius: 5px 0px 0px 5px" class="grid-item item-row"> </div>
-          <div style="background-color: #fdcb6e; grid-column: 3 ;" class="grid-item item-row"></div>
-          <div style="background-color: #00b894; grid-column: 4 ;" class="grid-item item-row"></div>  
-          <div style="background-color: #00b894; grid-column: 5 ;" class="grid-item item-row"></div>  
-          <div style="background-color: #fdcb6e; grid-column: 6 ;" class="grid-item item-row"></div>
-          <div style="background-color: #e17055; grid-column: 7 ; border-radius: 0px 5px 5px 0px;" class="grid-item item-row"></div>
+          <div class="progress-bar-child ${progressClass}"></div>
         </div>
         <div class="pool-monitor-container-values">
-          <div style="background-color: transparent; grid-column: 2 ; border-radius: 5px 0px 0px 5px" class="grid-item item-row"> <div style="font-size: 0.8em;text-align:right;margin:-5px 2px 0 0 ">${data.setpoint_class[0]}</div></div>
-          <div style="background-color: transparent; grid-column: 3 ;" class="grid-item item-row"><div style="font-size: 0.8em;text-align:right;margin:-5px 2px 0 0 ">${data.setpoint_class[1]}</div></div>
-          <div style="background-color: transparent; grid-column: 4 ;" class="grid-item item-row"><div style="font-size: 0.8em;color:#00b894;text-align:right;margin:-5px 2px 0 0 ">${data.setpoint_class[2]}</div></div>  
-          <div style="background-color: transparent; grid-column: 5 ;" class="grid-item item-row"><div style="font-size: 0.8em;text-align:right;margin:-5px 2px 0 0 ">${data.setpoint_class[3]}</div></div>  
-          <div style="background-color: transparent; grid-column: 6 ;" class="grid-item item-row"><div style="font-size: 0.8em;text-align:right;margin:-5px 2px 0 0 ">${data.setpoint_class[4]}</div></div>
+          <div style="background-color: transparent; grid-column: 1 ; border-radius: 0px 5px 5px 0px;" class="grid-item item-row"></div>
+          <div style="background-color: transparent; grid-column: 2 ; border-radius: 5px 0px 0px 5px" class="grid-item item-row"> <div style="font-size: 0.8em;text-align:center;margin:-5px 2px 0 0 ">${data.setpoint_class[0]}${data.legend_unit}</div></div>
+          <div style="background-color: transparent; grid-column: 3 ;" class="grid-item item-row"><div style="font-size: 0.8em;text-align:center;margin:-5px 2px 0 0 ">${data.setpoint_class[1]}${data.legend_unit}</div></div>
+          <div style="background-color: transparent; grid-column: 4 ;" class="grid-item item-row"><div style="font-size: 0.8em;color:#00b894;text-align:center;margin:-5px 2px 0 0 ">${data.setpoint_class[2]}${data.legend_unit}</div></div>  
+          <div style="background-color: transparent; grid-column: 5 ;" class="grid-item item-row"><div style="font-size: 0.8em;text-align:center;margin:-5px 2px 0 0 ">${data.setpoint_class[3]}${data.legend_unit}</div></div>  
+          <div style="background-color: transparent; grid-column: 6 ;" class="grid-item item-row"><div style="font-size: 0.8em;text-align:center;margin:-5px 2px 0 0 ">${data.setpoint_class[4]}${data.legend_unit}</div></div>
           <div style="background-color: transparent; grid-column: 7 ; border-radius: 0px 5px 5px 0px;" class="grid-item item-row"></div>
         </div> 
       </div> 
-      <div style="position: relative;top:-25px;margin-bottom:-25px;text-align:left;left:15px;">${data.title}<br/><small style="position: relative;top:-5px;font-size:9px;color:lightgrey">${data.last_updated}</small></div>
-
       `
-    }
-
-    static generateCompactBody (data) {    
-      return html`
-      <!-- ##### ${data.name} section ##### -->    
-      <div class="section-compact"  @click=${() => 
-          PoolMonitorCard._moreinfo(data.entity)}>   
-        <div class="pool-monitor-entity-img"><img src="${data.img_src}"></div>
-        <div class="pool-monitor-container">
-          <div style="background-color: transparent; grid-column: 1 ; border: 0px; box-shadow:none" class="grid-item item-row"> <div style="font-size: 0.8em;color:lightgrey;text-align:left;margin:3px 2px 0 0 ">${data.unit}</div></div>
-          <div style="background-color: #e17055; grid-column: 2 ; border-radius: 5px 0px 0px 5px" class="grid-item item-row"> </div>
-          <div style="background-color: #fdcb6e; grid-column: 3 ;" class="grid-item item-row"></div>
-          <div style="background-color: #00b894; grid-column: 4 ;" class="grid-item item-row"></div>  
-          <div class="cursor-text" style="border-${data.side_align}: 5px solid black; text-align:${data.side_align};background-color:transparent ;${data.side_align}: ${data.pct_cursor}%;">${data.value} ${data.separator} ${data.state}</div>
-          <div style="background-color: #00b894; grid-column: 5 ;" class="grid-item item-row"></div>  
-          <div style="background-color: #fdcb6e; grid-column: 6 ;" class="grid-item item-row"></div>
-          <div style="background-color: #e17055; grid-column: 7 ; border-radius: 0px 5px 5px 0px;" class="grid-item item-row"></div>
-        </div>
-        <div class="pool-monitor-container-values">
-          <div style="background-color: transparent; grid-column: 2 ; border-radius: 5px 0px 0px 5px" class="grid-item item-row"> <div style="font-size: 0.8em;text-align:right;margin:-5px 2px 0 0 ">${data.setpoint_class[0]}</div></div>
-          <div style="background-color: transparent; grid-column: 3 ;" class="grid-item item-row"><div style="font-size: 0.8em;text-align:right;margin:-5px 2px 0 0 ">${data.setpoint_class[1]}</div></div>
-          <div style="background-color: transparent; grid-column: 4 ;" class="grid-item item-row"><div style="font-size: 0.8em;color:#00b894;text-align:right;margin:-5px 2px 0 0 ">${data.setpoint_class[2]}</div></div>  
-          <div style="background-color: transparent; grid-column: 5 ;" class="grid-item item-row"><div style="font-size: 0.8em;text-align:right;margin:-5px 2px 0 0 ">${data.setpoint_class[3]}</div></div>  
-          <div style="background-color: transparent; grid-column: 6 ;" class="grid-item item-row"><div style="font-size: 0.8em;text-align:right;margin:-5px 2px 0 0 ">${data.setpoint_class[4]}</div></div>
-          <div style="background-color: transparent; grid-column: 7 ; border-radius: 0px 5px 5px 0px;" class="grid-item item-row"></div>
-        </div> 
-      </div> 
-          
-      <div style="position: relative;margin-top:-30px;text-align:left;left:-30px;font-size:9px;padding-bottom: 5px;">${data.title}</div>
-
-      `
-    }    
+      }
 }
 
-customElements.define("pool-monitor-card", PoolMonitorCard);
+customElements.define("pool-monitor-card-dbaronne", PoolMonitorCard);
